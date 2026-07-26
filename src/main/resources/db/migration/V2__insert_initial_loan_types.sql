@@ -1,0 +1,29 @@
+INSERT INTO tipo_prestamo (
+    id,
+    nombre,
+    tasa_anual,
+    validacion_automatica,
+    activo
+)
+VALUES
+(
+    '10000000-0000-0000-0000-000000000001',
+    'LIBRE_INVERSION',
+    18.0000,
+    TRUE,
+    TRUE
+),
+(
+    '10000000-0000-0000-0000-000000000002',
+    'VEHICULO',
+    14.5000,
+    TRUE,
+    TRUE
+),
+(
+    '10000000-0000-0000-0000-000000000003',
+    'VIVIENDA',
+    12.0000,
+    FALSE,
+    TRUE
+);
