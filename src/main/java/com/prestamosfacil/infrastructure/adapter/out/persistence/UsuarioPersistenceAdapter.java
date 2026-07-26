@@ -8,6 +8,8 @@ import com.prestamosfacil.infrastructure.adapter.out.persistence.repository.Usua
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 @RequiredArgsConstructor
 public class UsuarioPersistenceAdapter implements UsuarioRepositoryPort {
@@ -31,5 +33,10 @@ public class UsuarioPersistenceAdapter implements UsuarioRepositoryPort {
     @Override
     public boolean existePorNumeroDocumento(String numeroDocumento) {
         return usuarioJpaRepository.existsByNumeroDocumento(numeroDocumento);
+    }
+
+    @Override
+    public boolean existePorId(UUID id) {
+        return usuarioJpaRepository.existsById(id);
     }
 }

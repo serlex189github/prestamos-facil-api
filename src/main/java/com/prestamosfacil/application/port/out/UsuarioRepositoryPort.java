@@ -2,6 +2,8 @@ package com.prestamosfacil.application.port.out;
 
 import com.prestamosfacil.domain.model.Usuario;
 
+import java.util.UUID;
+
 public interface UsuarioRepositoryPort {
 
     Usuario guardar(Usuario usuario);
@@ -9,4 +11,6 @@ public interface UsuarioRepositoryPort {
     boolean existePorCorreo(String correo);
 
     boolean existePorNumeroDocumento(String numeroDocumento);
+
+    boolean existePorId(UUID id);
 }

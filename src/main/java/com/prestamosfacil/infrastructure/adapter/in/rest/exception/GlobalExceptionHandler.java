@@ -1,8 +1,6 @@
 package com.prestamosfacil.infrastructure.adapter.in.rest.exception;
 
-import com.prestamosfacil.domain.exception.CorreoDuplicadoException;
-import com.prestamosfacil.domain.exception.DocumentoDuplicadoException;
-import com.prestamosfacil.domain.exception.SalarioInvalidoException;
+import com.prestamosfacil.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,45 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler({
+        MontoSolicitudInvalidoException.class,
+        PlazoSolicitudInvalidoException.class
+    })
+    public ResponseEntity<ApiError> handleSolicitudInvalida(
+        RuntimeException ex,
+        HttpServletRequest request
+    ) {
+        return buildError(
+            HttpStatus.BAD_REQUEST,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(TipoPrestamoNoDisponibleException.class)
+    public ResponseEntity<ApiError> handleTipoPrestamoNoDisponible(
+        TipoPrestamoNoDisponibleException ex,
+        HttpServletRequest request
+    ) {
+        return buildError(
+            HttpStatus.NOT_FOUND,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
+
+    @ExceptionHandler(UsuarioNoEncontradoException.class)
+    public ResponseEntity<ApiError> handleUsuarioNoEncontrado(
+        UsuarioNoEncontradoException ex,
+        HttpServletRequest request
+    ) {
+        return buildError(
+            HttpStatus.NOT_FOUND,
+            ex.getMessage(),
+            request.getRequestURI()
+        );
+    }
 
     @ExceptionHandler(CorreoDuplicadoException.class)
     public ResponseEntity<ApiError> handleCorreoDuplicado(
