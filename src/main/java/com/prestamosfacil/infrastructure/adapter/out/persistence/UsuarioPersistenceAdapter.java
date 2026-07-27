@@ -8,6 +8,7 @@ import com.prestamosfacil.infrastructure.adapter.out.persistence.repository.Usua
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -38,5 +39,11 @@ public class UsuarioPersistenceAdapter implements UsuarioRepositoryPort {
     @Override
     public boolean existePorId(UUID id) {
         return usuarioJpaRepository.existsById(id);
+    }
+
+    @Override
+    public Optional<Usuario> buscarPorId(UUID id) {
+        return usuarioJpaRepository.findById(id)
+            .map(usuarioPersistenceMapper::toDomain);
     }
 }

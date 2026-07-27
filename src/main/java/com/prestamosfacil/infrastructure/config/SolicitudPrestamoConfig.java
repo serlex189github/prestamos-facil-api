@@ -1,13 +1,8 @@
 package com.prestamosfacil.infrastructure.config;
 
-import com.prestamosfacil.application.port.in.ConsultarSolicitudesUseCase;
-import com.prestamosfacil.application.port.in.EvaluarSolicitudManualUseCase;
-import com.prestamosfacil.application.port.in.GenerarPlanPagosUseCase;
-import com.prestamosfacil.application.port.in.RegistrarSolicitudPrestamoUseCase;
+import com.prestamosfacil.application.port.in.*;
 import com.prestamosfacil.application.port.out.*;
-import com.prestamosfacil.application.usecase.ConsultarSolicitudesService;
-import com.prestamosfacil.application.usecase.EvaluarSolicitudManualService;
-import com.prestamosfacil.application.usecase.RegistrarSolicitudPrestamoService;
+import com.prestamosfacil.application.usecase.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,20 +10,55 @@ import org.springframework.context.annotation.Configuration;
 public class SolicitudPrestamoConfig {
 
     @Bean
+    public FormalizarPrestamoService formalizarPrestamoService(
+        SolicitudPrestamoRepositoryPort solicitudPrestamoRepositoryPort,
+        PrestamoRepositoryPort prestamoRepositoryPort,
+        CuotaPlanPagoRepositoryPort cuotaPlanPagoRepositoryPort,
+        GenerarPlanPagosUseCase generarPlanPagosUseCase
+    ) {
+        return new FormalizarPrestamoService(
+            solicitudPrestamoRepositoryPort,
+            prestamoRepositoryPort,
+            cuotaPlanPagoRepositoryPort,
+            generarPlanPagosUseCase
+        );
+    }
+
+    @Bean
     public EvaluarSolicitudManualUseCase evaluarSolicitudManualUseCase(
         SolicitudPrestamoRepositoryPort solicitudPrestamoRepositoryPort,
         TipoPrestamoRepositoryPort tipoPrestamoRepositoryPort,
-        PrestamoRepositoryPort prestamoRepositoryPort,
-        CuotaPlanPagoRepositoryPort cuotaPlanPagoRepositoryPort,
-        GenerarPlanPagosUseCase generarPlanPagosUseCase,
+        FormalizarPrestamoService formalizarPrestamoService,
         NotificacionPrestamoPort notificacionPrestamoPort
     ) {
         return new EvaluarSolicitudManualService(
             solicitudPrestamoRepositoryPort,
             tipoPrestamoRepositoryPort,
+            notificacionPrestamoPort,
+            formalizarPrestamoService
+        );
+    }
+
+    @Bean
+    public EvaluarSolicitudAutomaticaUseCase
+    evaluarSolicitudAutomaticaUseCase(
+        SolicitudPrestamoRepositoryPort solicitudPrestamoRepositoryPort,
+        UsuarioRepositoryPort usuarioRepositoryPort,
+        TipoPrestamoRepositoryPort tipoPrestamoRepositoryPort,
+        PrestamoRepositoryPort prestamoRepositoryPort,
+        EvaluacionAutomaticaRepositoryPort evaluacionAutomaticaRepositoryPort,
+        GenerarPlanPagosUseCase generarPlanPagosUseCase,
+        FormalizarPrestamoService formalizarPrestamoService,
+        NotificacionPrestamoPort notificacionPrestamoPort
+    ) {
+        return new EvaluarSolicitudAutomaticaService(
+            solicitudPrestamoRepositoryPort,
+            usuarioRepositoryPort,
+            tipoPrestamoRepositoryPort,
             prestamoRepositoryPort,
-            cuotaPlanPagoRepositoryPort,
+            evaluacionAutomaticaRepositoryPort,
             generarPlanPagosUseCase,
+            formalizarPrestamoService,
             notificacionPrestamoPort
         );
     }

@@ -1,15 +1,13 @@
-package com.prestamosfacil.domain.model;
+package com.prestamosfacil.application.dto;
 
 import com.prestamosfacil.domain.enums.EstadoSolicitud;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.util.UUID;
 
-@Getter
+@Value
 @Builder
-@AllArgsConstructor
 public class ResultadoEvaluacionManual {
 
     private UUID solicitudId;

@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
+import java.util.UUID;
+
 @Slf4j
 @Repository
 @RequiredArgsConstructor
@@ -39,12 +42,36 @@ public class PrestamoPersistenceAdapter
         PrestamoEntity savedEntity =
             prestamoJpaRepository.save(entity);
 
-
         log.debug(
             "Préstamo guardado correctamente. id={}, solicitudId={}",
             savedEntity.getId(),
             savedEntity.getSolicitudId()
         );
+
         return prestamoPersistenceMapper.toDomain(savedEntity);
+    }
+
+    @Override
+    public BigDecimal obtenerDeudaMensualActiva(UUID usuarioId) {
+        if (usuarioId == null) {
+            throw new IllegalArgumentException(
+                "El identificador del usuario es obligatorio"
+            );
+        }
+
+        BigDecimal deudaMensual =
+            prestamoJpaRepository.obtenerDeudaMensualActiva(usuarioId);
+
+        BigDecimal resultado = deudaMensual != null
+            ? deudaMensual
+            : BigDecimal.ZERO;
+
+        log.debug(
+            "Deuda mensual activa calculada. usuarioId={}, deudaMensual={}",
+            usuarioId,
+            resultado
+        );
+
+        return resultado;
     }
 }

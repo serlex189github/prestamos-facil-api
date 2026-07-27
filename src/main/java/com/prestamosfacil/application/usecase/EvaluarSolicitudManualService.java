@@ -1,26 +1,19 @@
 package com.prestamosfacil.application.usecase;
 
+import com.prestamosfacil.application.dto.ResultadoEvaluacionManual;
+import com.prestamosfacil.application.dto.ResultadoFormalizacionPrestamo;
 import com.prestamosfacil.application.port.in.EvaluarSolicitudManualUseCase;
-import com.prestamosfacil.application.port.in.GenerarPlanPagosUseCase;
-import com.prestamosfacil.application.port.out.CuotaPlanPagoRepositoryPort;
 import com.prestamosfacil.application.port.out.NotificacionPrestamoPort;
-import com.prestamosfacil.application.port.out.PrestamoRepositoryPort;
 import com.prestamosfacil.application.port.out.SolicitudPrestamoRepositoryPort;
 import com.prestamosfacil.application.port.out.TipoPrestamoRepositoryPort;
 import com.prestamosfacil.domain.enums.DecisionManual;
-import com.prestamosfacil.domain.enums.EstadoPrestamo;
 import com.prestamosfacil.domain.enums.EstadoSolicitud;
-import com.prestamosfacil.domain.model.PlanPagos;
-import com.prestamosfacil.domain.model.Prestamo;
-import com.prestamosfacil.domain.model.ResultadoEvaluacionManual;
-import com.prestamosfacil.domain.model.SolicitudPrestamo;
-import com.prestamosfacil.domain.model.TipoPrestamo;
+import com.prestamosfacil.domain.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.UUID;
 
 @Slf4j
@@ -30,10 +23,8 @@ public class EvaluarSolicitudManualService
 
     private final SolicitudPrestamoRepositoryPort solicitudPrestamoRepositoryPort;
     private final TipoPrestamoRepositoryPort tipoPrestamoRepositoryPort;
-    private final PrestamoRepositoryPort prestamoRepositoryPort;
-    private final CuotaPlanPagoRepositoryPort cuotaPlanPagoRepositoryPort;
-    private final GenerarPlanPagosUseCase generarPlanPagosUseCase;
     private final NotificacionPrestamoPort notificacionPrestamoPort;
+    private final FormalizarPrestamoService formalizarPrestamoService;
 
     @Override
     @Transactional
@@ -99,59 +90,23 @@ public class EvaluarSolicitudManualService
                 )
             );
 
-        if (!Boolean.TRUE.equals(tipoPrestamo.getActivo())) {
-            throw new IllegalStateException(
-                "El tipo de préstamo asociado no se encuentra activo"
+        ResultadoFormalizacionPrestamo resultado =
+            formalizarPrestamoService.formalizar(
+                solicitud,
+                tipoPrestamo,
+                observacion
             );
-        }
-
-        LocalDate fechaPrimerPago = LocalDate.now().plusMonths(1);
-
-        PlanPagos planPagos = generarPlanPagosUseCase.generar(
-            solicitud.getMonto(),
-            tipoPrestamo.getTasaAnual(),
-            solicitud.getPlazoMeses(),
-            fechaPrimerPago
-        );
-
-        solicitud.setEstado(EstadoSolicitud.APROBADA);
-        solicitud.setFechaDecision(Instant.now());
-        solicitud.setObservacionDecision(observacion);
-
-        SolicitudPrestamo solicitudGuardada =
-            solicitudPrestamoRepositoryPort.guardar(solicitud);
-
-        Prestamo prestamo = Prestamo.builder()
-            .id(null)
-            .solicitudId(solicitudGuardada.getId())
-            .montoOriginal(solicitudGuardada.getMonto())
-            .saldoPendiente(solicitudGuardada.getMonto())
-            .tasaAnual(tipoPrestamo.getTasaAnual())
-            .plazoMeses(solicitudGuardada.getPlazoMeses())
-            .cuotaMensual(planPagos.getCuotaMensual())
-            .estado(EstadoPrestamo.ACTIVO)
-            .fechaAprobacion(Instant.now())
-            .fechaPrimerPago(fechaPrimerPago)
-            .build();
-
-        Prestamo prestamoGuardado =
-            prestamoRepositoryPort.guardar(prestamo);
-
-        cuotaPlanPagoRepositoryPort.guardarTodas(
-            prestamoGuardado.getId(),
-            planPagos.getCuotas()
-        );
 
         notificacionPrestamoPort.notificarDecision(
-            solicitudGuardada.getUsuarioId(),
-            solicitudGuardada.getId(),
-            solicitudGuardada.getEstado()
+            solicitud.getUsuarioId(),
+            resultado.getSolicitudId(),
+            EstadoSolicitud.APROBADA
         );
 
         return ResultadoEvaluacionManual.builder()
-            .solicitudId(solicitudGuardada.getId())
-            .estado(solicitudGuardada.getEstado())
-            .prestamoId(prestamoGuardado.getId())
+            .solicitudId(resultado.getSolicitudId())
+            .estado(EstadoSolicitud.APROBADA)
+            .prestamoId(resultado.getPrestamoId())
             .mensaje("Solicitud aprobada y préstamo creado correctamente")
             .build();
     }

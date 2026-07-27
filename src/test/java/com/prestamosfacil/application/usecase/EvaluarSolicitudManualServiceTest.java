@@ -12,7 +12,7 @@ import com.prestamosfacil.domain.enums.EstadoSolicitud;
 import com.prestamosfacil.domain.model.CuotaPlanPago;
 import com.prestamosfacil.domain.model.PlanPagos;
 import com.prestamosfacil.domain.model.Prestamo;
-import com.prestamosfacil.domain.model.ResultadoEvaluacionManual;
+import com.prestamosfacil.application.dto.ResultadoEvaluacionManual;
 import com.prestamosfacil.domain.model.SolicitudPrestamo;
 import com.prestamosfacil.domain.model.TipoPrestamo;
 import org.junit.jupiter.api.BeforeEach;

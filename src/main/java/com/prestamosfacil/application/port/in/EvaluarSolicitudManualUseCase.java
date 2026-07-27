@@ -1,7 +1,7 @@
 package com.prestamosfacil.application.port.in;
 
 import com.prestamosfacil.domain.enums.DecisionManual;
-import com.prestamosfacil.domain.model.ResultadoEvaluacionManual;
+import com.prestamosfacil.application.dto.ResultadoEvaluacionManual;
 
 import java.util.UUID;
 

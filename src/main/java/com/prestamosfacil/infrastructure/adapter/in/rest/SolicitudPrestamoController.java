@@ -5,7 +5,7 @@ import com.prestamosfacil.application.port.in.EvaluarSolicitudManualUseCase;
 import com.prestamosfacil.application.port.in.RegistrarSolicitudPrestamoUseCase;
 import com.prestamosfacil.domain.enums.EstadoSolicitud;
 import com.prestamosfacil.domain.model.PaginaResultado;
-import com.prestamosfacil.domain.model.ResultadoEvaluacionManual;
+import com.prestamosfacil.application.dto.ResultadoEvaluacionManual;
 import com.prestamosfacil.domain.model.SolicitudPrestamo;
 import com.prestamosfacil.infrastructure.adapter.in.rest.dto.*;
 import com.prestamosfacil.infrastructure.adapter.in.rest.mapper.EvaluacionManualRestMapper;
