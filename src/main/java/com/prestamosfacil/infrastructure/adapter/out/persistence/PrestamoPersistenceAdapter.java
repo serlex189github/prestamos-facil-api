@@ -1,6 +1,7 @@
 package com.prestamosfacil.infrastructure.adapter.out.persistence;
 
 import com.prestamosfacil.application.port.out.PrestamoRepositoryPort;
+import com.prestamosfacil.domain.enums.EstadoPrestamo;
 import com.prestamosfacil.domain.model.Prestamo;
 import com.prestamosfacil.infrastructure.adapter.out.persistence.entity.PrestamoEntity;
 import com.prestamosfacil.infrastructure.adapter.out.persistence.mapper.PrestamoPersistenceMapper;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -20,6 +23,35 @@ public class PrestamoPersistenceAdapter
 
     private final PrestamoJpaRepository prestamoJpaRepository;
     private final PrestamoPersistenceMapper prestamoPersistenceMapper;
+
+    @Override
+    public List<Prestamo> buscarPorEstados(
+        Collection<EstadoPrestamo> estados
+    ) {
+        if (estados == null || estados.isEmpty()) {
+            throw new IllegalArgumentException(
+                "Los estados de los préstamos son obligatorios"
+            );
+        }
+
+        log.debug(
+            "Consultando préstamos para reporte. estados={}",
+            estados
+        );
+
+        List<Prestamo> prestamos = prestamoJpaRepository
+            .findByEstadoInOrderByFechaAprobacionDesc(estados)
+            .stream()
+            .map(prestamoPersistenceMapper::toDomain)
+            .toList();
+
+        log.debug(
+            "Préstamos encontrados para reporte. cantidad={}",
+            prestamos.size()
+        );
+
+        return prestamos;
+    }
 
     @Override
     public Prestamo guardar(Prestamo prestamo) {

@@ -1,8 +1,11 @@
 package com.prestamosfacil.application.port.out;
 
+import com.prestamosfacil.domain.enums.EstadoPrestamo;
 import com.prestamosfacil.domain.model.Prestamo;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 public interface PrestamoRepositoryPort {
@@ -10,4 +13,8 @@ public interface PrestamoRepositoryPort {
     Prestamo guardar(Prestamo prestamo);
 
     BigDecimal obtenerDeudaMensualActiva(UUID usuarioId);
+
+    List<Prestamo> buscarPorEstados(
+        Collection<EstadoPrestamo> estados
+    );
 }
