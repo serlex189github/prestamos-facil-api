@@ -1,12 +1,10 @@
-package com.prestamosfacil.application.port.out;
+package com.prestamosfacil.application.port.in;
 
 import com.prestamosfacil.domain.enums.EstadoSolicitud;
 import com.prestamosfacil.domain.model.PaginaResultado;
 import com.prestamosfacil.domain.model.SolicitudPrestamo;
 
-public interface SolicitudPrestamoRepositoryPort {
-
-    SolicitudPrestamo guardar(SolicitudPrestamo solicitud);
+public interface ConsultarSolicitudesUseCase {
 
     PaginaResultado<SolicitudPrestamo> consultar(
         EstadoSolicitud estado,
