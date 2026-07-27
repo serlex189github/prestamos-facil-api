@@ -16,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -24,6 +26,13 @@ public class SolicitudPrestamoPersistenceAdapter
 
     private final SolicitudPrestamoJpaRepository solicitudPrestamoJpaRepository;
     private final SolicitudPrestamoPersistenceMapper solicitudPrestamoPersistenceMapper;
+
+    @Override
+    public Optional<SolicitudPrestamo> buscarPorId(UUID id) {
+        return solicitudPrestamoJpaRepository
+            .findById(id)
+            .map(solicitudPrestamoPersistenceMapper::toDomain);
+    }
 
     @Override
     public SolicitudPrestamo guardar(SolicitudPrestamo solicitud) {
