@@ -2,6 +2,7 @@ package com.prestamosfacil.infrastructure.adapter.in.rest.exception;
 
 import com.prestamosfacil.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.Instant;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -117,9 +119,16 @@ public class GlobalExceptionHandler {
         HttpServletRequest request
     ) {
 
+        log.error(
+            "Error inesperado procesando {} {}",
+            request.getMethod(),
+            request.getRequestURI(),
+            ex
+        );
+
         return buildError(
             HttpStatus.INTERNAL_SERVER_ERROR,
-            "Ha ocurrido un error interno.",
+            ex.getMessage(),   // temporalmente para depurar
             request.getRequestURI()
         );
     }
@@ -140,4 +149,5 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(status).body(error);
     }
+
 }

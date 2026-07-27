@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-
+@Entity
 @Table(name = "prestamo")
 @Getter
 @Setter
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class PrestamoEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "solicitud_id", nullable = false, unique = true)
