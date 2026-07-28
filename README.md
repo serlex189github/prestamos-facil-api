@@ -474,6 +474,19 @@ de precisión asociados con `double` o `float`.
 
 ---
 
+## Evidencias de funcionamiento
+
+Las capturas de funcionamiento se encuentran en `docs/capturas/` y evidencian los principales requerimientos funcionales implementados:
+
+1. Creación de usuarios.
+2. Registro de solicitudes de préstamo.
+3. Consulta paginada y filtrada de solicitudes.
+4. Evaluación manual de solicitudes.
+5. Evaluación automática mediante Stored Procedure.
+6. Reporte consolidado de préstamos aprobados.
+7. Verificación del plan de pagos de las solicitudes.
+8. Estado de salud de la aplicación mediante Spring Boot Actuator.
+
 ## Autor
 
 **Sergio Alexander Gómez Peña**
